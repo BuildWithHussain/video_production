@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1200, height=630" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="theme/tokens.css" />
+    <link rel="stylesheet" href="theme/fonts.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1200px; height: 630px; overflow: hidden;
+        background: var(--surface-base);
+        font-family: var(--font-text);
+      }
+
+      .bg { position: absolute; inset: 0; background: var(--surface-base); }
+      .glow {
+        position: absolute; top: 62%; left: 16%;
+        width: 760px; height: 760px; transform: translate(-50%, -50%);
+        border-radius: 9999px;
+        background: radial-gradient(circle,
+          color-mix(in srgb, var(--brand) 18%, transparent) 0%, transparent 70%);
+      }
+
+      .stage {
+        position: absolute; inset: 0; z-index: 2;
+        padding: 40px 60px 104px;
+        display: flex; flex-direction: column; justify-content: center; gap: 26px;
+      }
+
+      .row { display: flex; align-items: flex-end; gap: 20px; }
+      .row.me { justify-content: flex-end; }
+
+      .avatar {
+        width: 120px; height: 120px; border-radius: 9999px; flex: none;
+        object-fit: cover; background: var(--surface-gray-2);
+        border: 3px solid var(--surface-gray-3);
+      }
+      .avatar.hussain { object-position: 50% 32%; }
+      .avatar.donna { object-position: 50% 42%; }
+
+      .ask {
+        background: var(--brand); color: #fff;
+        font-size: 40px; line-height: 1.2; font-weight: var(--fw-semibold);
+        padding: 22px 32px; border-radius: 30px; border-bottom-right-radius: 10px;
+      }
+
+      .card {
+        flex: 1;
+        background: var(--surface-gray-2);
+        border: 1px solid var(--surface-gray-3);
+        border-radius: 32px; border-bottom-left-radius: 10px;
+        padding: 30px 38px 34px;
+      }
+
+      .card-top {
+        display: flex; align-items: baseline; justify-content: space-between; gap: 24px;
+      }
+      .card-title {
+        font-size: 44px; line-height: 1.15; font-weight: var(--fw-bold);
+        color: var(--ink-gray-9);
+      }
+      .card-amount {
+        font-size: 38px; font-weight: var(--fw-bold); color: var(--brand-ink);
+        white-space: nowrap;
+      }
+
+      .rule {
+        margin: 22px 0 24px;
+        border-top: 2px dashed var(--surface-gray-4);
+      }
+
+      .items { display: flex; flex-direction: column; gap: 18px; }
+      .item {
+        display: flex; align-items: center; gap: 18px;
+        font-size: 34px; line-height: 1.1; font-weight: var(--fw-medium);
+        color: var(--ink-gray-8);
+      }
+      .tick {
+        width: 38px; height: 38px; flex: none; border-radius: 9999px;
+        background: var(--brand); color: #fff;
+        font-size: 22px; font-weight: var(--fw-bold);
+        display: flex; align-items: center; justify-content: center;
+      }
+      .item .code { font-weight: var(--fw-bold); color: var(--ink-gray-9); }
+
+      .footer {
+        position: absolute; left: 60px; bottom: 36px; z-index: 3;
+        display: flex; align-items: center; gap: 16px;
+        font-size: 25px; font-weight: var(--fw-semibold);
+        letter-spacing: 0.08em; text-transform: uppercase;
+        color: var(--ink-gray-6);
+      }
+      .footer .dot { width: 10px; height: 10px; border-radius: 9999px; background: var(--brand); }
+    </style>
+  </head>
+
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="1"
+         data-fps="30" data-width="1200" data-height="630">
+      <div class="bg"><div class="glow"></div></div>
+
+      <div class="stage">
+        <div class="row me">
+          <div class="ask">Did the LMS sale get invoiced?</div>
+          <img class="avatar hussain" src="assets/img/hussain-avatar.png" alt="" />
+        </div>
+
+        <div class="row">
+          <img class="avatar donna" src="assets/img/donna-face.png" alt="" />
+          <div class="card">
+            <div class="card-top">
+              <div class="card-title">Booked it this morning</div>
+              <div class="card-amount">₹14,160</div>
+            </div>
+            <div class="rule"></div>
+            <div class="items">
+              <div class="item"><span class="tick">✓</span><span>Sales Invoice <b class="code">SINV-00214</b></span></div>
+              <div class="item"><span class="tick">✓</span><span>Razorpay payment matched</span></div>
+              <div class="item"><span class="tick">✓</span><span>Receipt emailed to customer</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer"><span class="dot"></span>Automating the boring stuff with an AI agent</div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

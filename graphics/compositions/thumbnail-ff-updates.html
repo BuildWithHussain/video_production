@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="theme/tokens.css" />
+    <link rel="stylesheet" href="theme/fonts.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px; height: 1080px; overflow: hidden;
+        background: var(--surface-base);
+        font-family: var(--font-text);
+      }
+      :root { --dot: rgba(255,255,255,0.05); }
+
+      .bg { position: absolute; inset: 0; background: var(--surface-base); }
+      .dot-grid {
+        position: absolute; inset: 0;
+        background-image: radial-gradient(circle, var(--dot) 1.6px, transparent 1.6px);
+        background-size: 46px 46px;
+      }
+      /* violet pool behind the subject, so the cutout doesn't float on flat black */
+      .glow {
+        position: absolute; left: 60px; top: 120px; width: 1100px; height: 900px;
+        background: radial-gradient(ellipse at center,
+          color-mix(in srgb, var(--brand) 18%, transparent) 0%,
+          transparent 70%);
+        filter: blur(60px);
+      }
+
+      /* Subject cutout at native 1686x868 — never scaled, never retouched.
+         assets/img/grade_subject.py un-mirrors the selfie (so the BWH logo reads
+         correctly) and kills the tungsten cast. Because the flip points the
+         fingers left, left:-16 puts the clipped fingertips off-frame LEFT;
+         top:212 bottom-anchors the chest at y=1080.
+         Hand plane lands at y=639; palm spans x=-16..267; head never passes x=1152. */
+      .photo { position: absolute; left: -16px; top: 212px; width: 1686px; height: 868px; }
+
+      /* ---- right title column (frame x 1280..1880, clear of subject at x=1152).
+         top:338 centres the 304px title block on the subject's head (y 320..680). ---- */
+      .title-col { position: absolute; left: 1280px; top: 338px; width: 600px; }
+      .title {
+        font-size: 96px; line-height: 0.94;
+        font-weight: 800; letter-spacing: -0.035em;
+        color: var(--ink-gray-9);
+      }
+      .title .line { display: block; }
+      .title .big {
+        font-size: 132px; letter-spacing: -0.045em;
+        color: var(--brand-ink);
+      }
+
+      /* ---- scattered feature tags, balanced on the open palm ---- */
+      /* The band x=10..730, y=70..630 is clear of the subject; the lowest tag
+         lands on the hand plane (y=639) over the palm (x<267). */
+      .tag {
+        position: absolute;
+        padding: 18px 26px;
+        white-space: nowrap;
+        background: var(--surface-gray-2);
+        border: 1px solid var(--outline-gray-3);
+        border-radius: var(--radius-xl);
+        box-shadow:
+          0 1px 0 0 color-mix(in srgb, #ffffff 7%, transparent) inset,
+          0 26px 50px -14px rgba(0,0,0,0.8);
+        font-size: 36px; font-weight: var(--fw-semibold);
+        letter-spacing: -0.022em; color: var(--ink-gray-9);
+      }
+      .t1 { left: 279px; top:  92px; transform: rotate(7deg); }
+      .t2 { left:  68px; top: 202px; transform: rotate(-8deg); }
+      .t3 { left: 189px; top: 322px; transform: rotate(3deg); }
+      .t4 { left: 276px; top: 442px; transform: rotate(-9deg); }
+      /* t5 is the one that has landed: measured 365x80, tilted -3deg so its
+         bottom-LEFT corner settles onto the hand plane (y=639) over the palm
+         (x<267) instead of lifting away from it. */
+      .t5 {
+        left: 40px; top: 551px; transform: rotate(-3deg);
+        background: var(--brand);
+        border-color: color-mix(in srgb, #ffffff 22%, transparent);
+        color: var(--on-brand);
+      }
+
+      /* contact shadow t5 casts onto the palm — follows the tag's -3deg bottom
+         edge, and fades out rightward where the tag overhangs air past the heel */
+      .contact-shadow {
+        position: absolute; left: 20px; top: 630px; width: 260px; height: 32px;
+        transform: rotate(-3deg);
+        background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0));
+        -webkit-mask-image: linear-gradient(to right, #000 66%, transparent 100%);
+        mask-image: linear-gradient(to right, #000 66%, transparent 100%);
+        filter: blur(5px);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main"
+         data-start="0" data-duration="1" data-fps="30"
+         data-width="1920" data-height="1080">
+      <div class="bg">
+        <div class="dot-grid"></div>
+        <div class="glow"></div>
+      </div>
+
+      <img class="photo" src="assets/img/hussain-plate-graded.png" alt="" />
+
+      <div class="title-col">
+        <h1 class="title">
+          <span class="line">Frappe</span>
+          <span class="line">Framework</span>
+          <span class="line big">Updates</span>
+        </h1>
+      </div>
+
+      <div class="contact-shadow"></div>
+      <div class="tag t1">Document Templates</div>
+      <div class="tag t2">Error Analytics</div>
+      <div class="tag t3">Unified Document Settings</div>
+      <div class="tag t4">List Layouts</div>
+      <div class="tag t5">Web Form Requests</div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

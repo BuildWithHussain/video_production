@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <link rel="stylesheet" href="theme/tokens.css" />
+    <link rel="stylesheet" href="theme/fonts.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px; height: 1080px; overflow: hidden;
+        font-family: var(--font-text);
+      }
+
+      .frame { position: absolute; inset: 0; }
+      /* Explicit opaque plate — alpha-capable renders drop the body background. */
+      .bg { position: absolute; inset: 0; background: #000000; }
+
+      .stage {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 850px);
+        grid-template-rows: repeat(2, 478px);
+        gap: 28px;
+      }
+
+      .cell {
+        width: 850px; height: 478px;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--outline-gray-2);
+      }
+      .cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main"
+         data-start="0" data-duration="5.00" data-fps="30"
+         data-width="1920" data-height="1080">
+      <div class="clip" data-start="0" data-duration="5.00" data-track-index="0">
+        <div class="frame">
+          <div class="bg"></div>
+          <div class="stage">
+            <div class="grid" id="thumb-grid">
+              <div class="cell"><img src="renders/thumbnail-light.png" alt="Day 1" /></div>
+              <div class="cell"><img src="renders/thumbnail-day2.png" alt="Day 2" /></div>
+              <div class="cell"><img src="renders/thumbnail-day3.png" alt="Day 3" /></div>
+              <div class="cell"><img src="renders/thumbnail-day4.png" alt="Day 4" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

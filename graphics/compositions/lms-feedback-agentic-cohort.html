@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <link rel="stylesheet" href="theme/tokens.css" />
+    <link rel="stylesheet" href="theme/fonts.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px; height: 1080px; overflow: hidden;
+        background: var(--surface-base);
+        font-family: var(--font-text);
+        color: var(--ink-gray-9);
+      }
+
+      .frame { position: absolute; inset: 0; }
+
+      /* Explicit opaque plate — alpha-capable renders drop the body background. */
+      .bg { position: absolute; inset: 0; background: var(--surface-base); }
+
+      /* Dot grid — the same quiet texture the intro cards use. */
+      .grid {
+        position: absolute; inset: 0;
+        background-image: radial-gradient(var(--ink-gray-3) 1.4px, transparent 1.4px);
+        background-size: 44px 44px;
+        opacity: 0.16;
+      }
+
+      /* One soft violet bloom, top-right, so the frame is not flat. */
+      .glow {
+        position: absolute; top: -420px; right: -320px;
+        width: 1200px; height: 1200px; border-radius: 50%;
+        background: radial-gradient(circle, var(--brand) 0%, transparent 62%);
+        opacity: 0.13;
+      }
+
+      .stage {
+        position: absolute; inset: 0;
+        padding: 68px 72px 60px;
+        display: flex; flex-direction: column;
+      }
+
+      /* ---------- header ---------- */
+      header {
+        display: flex; align-items: flex-end; justify-content: space-between;
+        gap: 64px;
+        padding-bottom: 32px;
+        border-bottom: 1px solid var(--outline-gray-2);
+      }
+
+      .kicker {
+        font-size: 20px; font-weight: var(--fw-bold);
+        letter-spacing: 0.18em; text-transform: uppercase;
+        color: var(--brand-ink);
+        margin-bottom: 14px;
+      }
+      h1 {
+        font-size: 62px; font-weight: var(--fw-black);
+        letter-spacing: -0.025em; line-height: 1.04;
+      }
+      .subtitle {
+        margin-top: 14px;
+        font-size: 24px; font-weight: var(--fw-medium);
+        color: var(--ink-gray-6);
+      }
+
+      .score { flex: none; text-align: right; }
+      .score-row { display: flex; align-items: center; justify-content: flex-end; gap: 20px; }
+      .score-num {
+        font-size: 86px; font-weight: var(--fw-black);
+        letter-spacing: -0.04em; line-height: 0.9;
+      }
+      .score-num small {
+        font-size: 34px; font-weight: var(--fw-bold);
+        color: var(--ink-gray-5);
+        letter-spacing: -0.01em;
+      }
+      .score-meta {
+        margin-top: 16px;
+        font-size: 20px; font-weight: var(--fw-medium);
+        color: var(--ink-gray-6);
+      }
+      .score-meta b { color: var(--ink-gray-8); font-weight: var(--fw-semibold); }
+      .dot { color: var(--ink-gray-4); padding: 0 10px; }
+
+      /* ---------- stars ---------- */
+      .stars { position: relative; display: inline-block; line-height: 0; }
+      .stars .track { display: flex; gap: 4px; }
+      .stars .fill {
+        position: absolute; inset: 0 auto 0 0;
+        display: flex; gap: 4px; overflow: hidden;
+      }
+      .stars svg { flex: none; display: block; }
+      .stars .track svg path { fill: var(--ink-gray-3); }
+      .stars .fill svg path { fill: var(--amber-400); }
+
+      /* ---------- grid of feedback ---------- */
+      .cards {
+        flex: 1;
+        margin-top: 36px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: 1fr;
+        gap: 28px;
+      }
+
+      .card {
+        display: flex; flex-direction: column;
+        padding: 32px 34px;
+        border-radius: 20px;
+        background: var(--surface-gray-1);
+        border: 1px solid var(--outline-gray-2);
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+      }
+
+      .who { display: flex; align-items: center; gap: 16px; }
+      .avatar {
+        flex: none; width: 56px; height: 56px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        background: var(--brand-subtle);
+        color: var(--brand-ink);
+        font-size: 24px; font-weight: var(--fw-bold);
+        letter-spacing: -0.01em;
+      }
+      .name {
+        font-size: 25px; font-weight: var(--fw-semibold);
+        letter-spacing: -0.015em;
+        color: var(--ink-gray-9);
+      }
+      .who .stars { margin-left: auto; }
+
+      blockquote {
+        margin-top: 24px;
+        font-size: 23px; line-height: 1.5;
+        font-weight: var(--fw-regular);
+        letter-spacing: -0.006em;
+        color: var(--ink-gray-7);
+      }
+      /* Short testimonials get pull-quote treatment instead of dead space. */
+      .card.short blockquote {
+        margin-top: 0;
+        flex: 1;
+        display: flex; align-items: center;
+        font-size: 36px; line-height: 1.35;
+        font-weight: var(--fw-medium);
+        letter-spacing: -0.018em;
+        color: var(--ink-gray-8);
+      }
+
+      footer {
+        margin-top: 26px;
+        display: flex; align-items: center; justify-content: space-between;
+        font-size: 19px; font-weight: var(--fw-medium);
+        color: var(--ink-gray-5);
+      }
+      footer .mark { color: var(--brand-ink); font-weight: var(--fw-semibold); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main"
+         data-start="0" data-duration="5.00" data-fps="30"
+         data-width="1920" data-height="1080">
+      <div class="clip" data-start="0" data-duration="5.00" data-track-index="0">
+        <div class="frame">
+          <div class="bg"></div>
+          <div class="grid"></div>
+          <div class="glow"></div>
+
+          <div class="stage">
+            <header>
+              <div>
+                <div class="kicker">Cohort Feedback</div>
+                <h1>Agentic Development with Frappe</h1>
+                <div class="subtitle">Zero to Hero Cohort &middot; 4&ndash;8 July 2026 &middot; 34 seats</div>
+              </div>
+
+              <div class="score">
+                <div class="score-row">
+                  <span class="stars" data-rating="4.83" data-size="34"></span>
+                  <span class="score-num">4.8<small>/5</small></span>
+                </div>
+                <div class="score-meta">
+                  Content <b>4.7</b><span class="dot">&middot;</span>
+                  Instructor <b>5.0</b><span class="dot">&middot;</span>
+                  Value <b>4.8</b>
+                </div>
+              </div>
+            </header>
+
+            <div class="cards">
+              <div class="card">
+                <div class="who">
+                  <span class="avatar">A</span>
+                  <span class="name">Aadhil</span>
+                  <span class="stars" data-rating="5" data-size="22"></span>
+                </div>
+                <blockquote>
+                  I've been working with Frappe Framework for years, and over the last
+                  year I've shifted most of my development to Agentic Development. It
+                  made me much faster, but I always wondered if I was following the
+                  right approach or just finding shortcuts. This course gave me that
+                  validation.
+                </blockquote>
+              </div>
+
+              <div class="card">
+                <div class="who">
+                  <span class="avatar">AK</span>
+                  <span class="name">Ayushman Kapoor</span>
+                  <span class="stars" data-rating="5" data-size="22"></span>
+                </div>
+                <blockquote>
+                  Hussain as an instructor doesn't only cover the topic in depth but
+                  also gives briefs on everything around it, which makes the value of
+                  content simply irreplaceable and priceless. You always get more than
+                  promised.
+                </blockquote>
+              </div>
+
+              <div class="card">
+                <div class="who">
+                  <span class="avatar">GK</span>
+                  <span class="name">Gopi Krishnan</span>
+                  <span class="stars" data-rating="5" data-size="22"></span>
+                </div>
+                <blockquote>
+                  Really, this was an awesome session! It's valuable not just for Frappe
+                  developers, but for anyone exploring agentic development. Thank you so
+                  much for sharing your knowledge and experience with us. I learned a lot!
+                </blockquote>
+              </div>
+
+              <div class="card">
+                <div class="who">
+                  <span class="avatar">GY</span>
+                  <span class="name">Govind Yadav</span>
+                  <span class="stars" data-rating="4.67" data-size="22"></span>
+                </div>
+                <blockquote>
+                  This session was very helpful and informative. I learned many new
+                  concepts and gained valuable practical knowledge. Thank you for
+                  conducting such a great session.
+                </blockquote>
+              </div>
+
+              <div class="card short">
+                <div class="who">
+                  <span class="avatar">SG</span>
+                  <span class="name">Sanjay Gera</span>
+                  <span class="stars" data-rating="4.33" data-size="22"></span>
+                </div>
+                <blockquote>Valuable insights on emerging trends and use cases.</blockquote>
+              </div>
+
+              <div class="card short">
+                <div class="who">
+                  <span class="avatar">N</span>
+                  <span class="name">Navin</span>
+                  <span class="stars" data-rating="5" data-size="22"></span>
+                </div>
+                <blockquote>Great Cohort. No doubt.</blockquote>
+              </div>
+            </div>
+
+            <footer>
+              <span>Feedback from cohort participants &middot; 6 reviews</span>
+              <span class="mark">buildwithhussain.com</span>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Static still — no timeline. Stars are painted once at parse time so the
+      // frame is identical at every seek.
+      const STAR = 'M12 2.2l2.95 5.98 6.6.96-4.78 4.66 1.13 6.57L12 17.27 6.1 20.37l1.13-6.57L2.45 9.14l6.6-.96z';
+
+      function starSvg(size) {
+        return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24">' +
+               '<path d="' + STAR + '"/></svg>';
+      }
+
+      document.querySelectorAll('.stars').forEach((el) => {
+        const rating = parseFloat(el.dataset.rating);
+        const size = parseInt(el.dataset.size, 10);
+        const gap = 4;
+        const row = Array.from({ length: 5 }, () => starSvg(size)).join('');
+        // Fractional fill: clip the amber row at the exact star-plus-gap offset.
+        const full = Math.floor(rating);
+        const frac = rating - full;
+        const width = full * (size + gap) + frac * size;
+        el.innerHTML =
+          '<span class="track">' + row + '</span>' +
+          '<span class="fill" style="width:' + width.toFixed(2) + 'px">' + row + '</span>';
+        el.style.width = (5 * size + 4 * gap) + 'px';
+        el.style.height = size + 'px';
+      });
+    </script>
+  </body>
+</html>

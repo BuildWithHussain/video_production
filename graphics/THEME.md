@@ -74,6 +74,29 @@ line, product logo + Inter-bold title (`--ink-gray-9`) + violet chapter pill
 (`--brand-subtle` fill / `--brand-ink` text). Edit the two title lines and the
 `.chapter` text per video.
 
+## Intro cards — taste (validated on the "Agentic Development" course intro)
+
+Course/video intro cards live in `compositions/intro-*.html`. Established
+preferences — hold to these unless the user says otherwise:
+
+- **Simple over busy.** No traveling/roaming radial glows or blobs behind the
+  type. A quiet **drifting dot grid** on the dark surface is the right amount of
+  life; ambient gradient movement reads as noise.
+- **No vertical accent bar / spine next to the text** — it makes the frame feel
+  like a *slide deck*, not a video intro. Avoid it.
+- **A single deliberate motion accent is good** — e.g. a violet **scan bar** that
+  sweeps across once on entry. One gesture, not many.
+- **Type:** left-aligned, Inter bold, `--ink-gray-9`; product name in
+  `--brand-ink` violet. Small uppercase letter-spaced kicker ("DAY 1") above.
+- **Exit = reveal, not a cut.** The whole card is one group that **wipes off**
+  (grid-pulse: slides left behind a bright violet leading `.edge`) to expose a
+  **transparent** background, so it composites over the real video and reveals
+  the footage underneath. Render with alpha: `--format mov` (ProRes 4444) or
+  `--format webm` (VP9, ~1/10 size). Overlay: `[0][1]overlay=shortest=1`.
+- **Canonical intro = `intro-gridpulse.html`** (grid + scan sweep, left type,
+  wipe-off reveal to transparent). This is the only intro composition kept —
+  busier gradient/aurora and slide-like spine variants were tried and rejected.
+
 ## Retiring bwh-video
 
 `~/Learning/bwh-video` (Remotion) is the **old** graphics system. Port its

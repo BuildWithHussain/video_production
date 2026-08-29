@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="theme/tokens.css" />
+    <link rel="stylesheet" href="theme/fonts.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px; height: 1080px; overflow: hidden;
+        background: var(--surface-base);
+        font-family: var(--font-text);
+      }
+      :root { --dot: rgba(255,255,255,0.05); }
+
+      .bg { position: absolute; inset: 0; background: var(--surface-base); }
+      .dot-grid {
+        position: absolute; inset: 0;
+        background-image: radial-gradient(circle, var(--dot) 1.6px, transparent 1.6px);
+        background-size: 46px 46px;
+      }
+      /* violet pool centred on the subject (head x890) so the cutout doesn't
+         float on flat black; a second, wider wash lifts the title band. */
+      .glow {
+        position: absolute; left: 300px; top: 320px; width: 1200px; height: 820px;
+        background: radial-gradient(ellipse at center,
+          color-mix(in srgb, var(--brand) 20%, transparent) 0%,
+          transparent 70%);
+        filter: blur(60px);
+      }
+      .glow-top {
+        position: absolute; left: 430px; top: -260px; width: 1060px; height: 640px;
+        background: radial-gradient(ellipse at center,
+          color-mix(in srgb, var(--brand) 12%, transparent) 0%,
+          transparent 72%);
+        filter: blur(70px);
+      }
+
+      /* Subject cutout at native 1920x1080 — never scaled, never retouched.
+         assets/img/grade_subject_july.py strips the matte specks and applies the
+         brand grade; no un-mirror needed (this plate is not a selfie flip).
+         Native map: head top y484 (x830..955), LEFT palm plane y514 over
+         x450..614, RIGHT palm plane y508 over x1190..1367.
+         Scaled 1.12x about (960,1080) then pushed down 150px (the extra torso
+         falls off the bottom edge). Post-transform frame map: head top y562
+         (x814..954), LEFT palm y596 over x389..572, RIGHT palm y589 over
+         x1218..1416. Everything above y562 is free full-width. */
+      .photo {
+        position: absolute; left: 0; top: 0; width: 1920px; height: 1080px;
+        transform: translateY(150px) scale(1.12); transform-origin: 50% 100%;
+      }
+
+      /* ---- centred title stack, sitting in the headroom above the subject
+         (head top y484) and inside the tag bands (x 450..1490). The subject is
+         looking straight up at it. ---- */
+      .title-col {
+        position: absolute; left: 460px; top: 100px; width: 1000px;
+        text-align: center;
+      }
+      .headline {
+        font-size: 120px; line-height: 0.9;
+        font-weight: 800; letter-spacing: -0.05em;
+        color: var(--ink-gray-9);
+      }
+      .headline .accent { color: var(--brand-ink); }
+
+      /* ---- feature tags in the outer bands, the hero of each pair landing on
+         an open palm ---- */
+      .tag {
+        position: absolute;
+        padding: 22px 32px;
+        white-space: nowrap;
+        background: var(--surface-gray-3);
+        border: 1px solid var(--outline-gray-2);
+        border-radius: var(--radius-xl);
+        box-shadow:
+          0 1px 0 0 color-mix(in srgb, #ffffff 7%, transparent) inset,
+          0 26px 50px -14px rgba(0,0,0,0.8);
+        font-size: 48px; font-weight: var(--fw-semibold);
+        letter-spacing: -0.022em; color: var(--ink-gray-9);
+      }
+      /* upper pair — a centred row tucked under the title (measured 473px and
+         492px wide, 70px gutter, the 1035px row centred on the subject at x930).
+         Rotation held to 4deg so the tilted corners keep clear of the hero row. */
+      .t1 { left:  412px; top: 248px; transform: rotate(-4deg); }
+      .t2 { left:  955px; top: 248px; transform: rotate(4deg); }
+      /* hero pair — floating clear ABOVE the open palms (left palm y596, right
+         y589); tag bottoms sit at y532/526, so the lowest tilted corner still
+         leaves ~45px of air over the hand. */
+      .t3 {
+        left:  80px; top: 430px; transform: rotate(-4deg);
+        background: var(--brand);
+        border-color: color-mix(in srgb, #ffffff 22%, transparent);
+        color: var(--on-brand);
+      }
+      .t4 {
+        left: 1280px; top: 424px; transform: rotate(4deg);
+        background: var(--brand);
+        border-color: color-mix(in srgb, #ffffff 22%, transparent);
+        color: var(--on-brand);
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main"
+         data-start="0" data-duration="1" data-fps="30"
+         data-width="1920" data-height="1080">
+      <div class="bg">
+        <div class="dot-grid"></div>
+        <div class="glow-top"></div>
+        <div class="glow"></div>
+      </div>
+
+      <img class="photo" src="assets/img/hussain-plate-july-graded.png" alt="" />
+
+      <div class="title-col">
+        <h1 class="headline">WHAT'S <span class="accent">NEW</span></h1>
+      </div>
+
+      <div class="tag t1">Attachment Gallery</div>
+      <div class="tag t2">Component Explorer</div>
+      <div class="tag t3">Print Format Builder</div>
+      <div class="tag t4">Frappe Playground</div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

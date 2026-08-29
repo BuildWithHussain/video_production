@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="theme/tokens.css" />
+    <link rel="stylesheet" href="theme/fonts.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px; height: 1080px; overflow: hidden;
+        background: transparent;
+        font-family: var(--font-text);
+      }
+      .card {
+        position: absolute; inset: 0; overflow: hidden;
+        background: var(--surface-base);
+        will-change: transform;
+      }
+
+      /* animated dot grid (parallax drift) */
+      .grid {
+        position: absolute; inset: -160px;
+        background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.6px, transparent 1.6px);
+        background-size: 48px 48px;
+        will-change: transform;
+      }
+      /* violet scan bar sweeping across during the intro */
+      .scan {
+        position: absolute; top: 0; bottom: 0; width: 3px; left: 0;
+        background: var(--brand);
+        box-shadow: 0 0 80px 20px color-mix(in srgb, var(--brand) 45%, transparent);
+        will-change: transform; z-index: 3;
+      }
+
+      .content {
+        position: absolute; inset: 0; z-index: 4;
+        display: flex; align-items: center;
+      }
+      .block { display: flex; padding-left: 200px; }
+      .text { display: flex; flex-direction: column; justify-content: center; }
+      .kicker {
+        font-size: 32px; font-weight: var(--fw-semibold);
+        letter-spacing: 0.34em; text-transform: uppercase;
+        color: var(--brand-ink); margin-bottom: 28px;
+      }
+      .title {
+        font-size: 100px; line-height: 1.05;
+        font-weight: var(--fw-bold); letter-spacing: -0.025em;
+        color: var(--ink-gray-9);
+      }
+      .title .line { display: block; }
+      .title .accent-word { color: var(--brand-ink); }
+
+      /* violet leading edge on the right, sweeps left as the card wipes off */
+      .edge {
+        position: absolute; top: 0; bottom: 0; right: -6px; width: 6px;
+        background: var(--brand); z-index: 6;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main"
+         data-start="0" data-duration="4" data-fps="30"
+         data-width="1920" data-height="1080">
+      <div class="card clip" id="card"
+           data-start="0" data-duration="4" data-track-index="0">
+        <div class="grid" id="grid"></div>
+        <div class="scan" id="scan"></div>
+
+        <div class="content">
+          <div class="block">
+            <div class="text">
+              <div class="kicker" id="kicker">Day 2</div>
+              <h1 class="title" id="title">
+                <span class="line" data-line>Agentic Development</span>
+                <span class="line" data-line>with <span class="accent-word">Frappe Framework</span></span>
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        <div class="edge" id="edge"></div>
+      </div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // ambient motion across the clip — just the drifting grid, kept simple
+      gsap.set("#grid", { x: 0, y: 0 });
+      tl.to("#grid", { x: -80, y: 40, duration: 4, ease: "none" }, 0);
+
+      // scan bar sweeps once across the frame during intro, then parks off-screen
+      gsap.set("#scan", { x: -60, opacity: 0 });
+      tl.to("#scan", { opacity: 1, duration: 0.2 }, 0.15)
+        .to("#scan", { x: 2020, duration: 1.1, ease: "power2.inOut" }, 0.2)
+        .to("#scan", { opacity: 0, duration: 0.2 }, 1.15);
+
+      // intro reveal
+      gsap.set("#kicker", { x: -24, opacity: 0 });
+      gsap.set("[data-line]", { x: -44, opacity: 0 });
+      tl.to("#kicker", { x: 0, opacity: 1, duration: 0.6, ease: "power2.out" }, 0.4);
+      tl.to("[data-line]", { x: 0, opacity: 1, duration: 0.8, ease: "power3.out", stagger: 0.12 }, 0.5);
+
+      // exit: whole card wipes off to the left, violet edge leads, video revealed
+      tl.to(".content", { x: 60, opacity: 0, duration: 0.5, ease: "power2.in" }, 2.8);
+      tl.to("#card", { xPercent: -104, duration: 1.0, ease: "power3.inOut" }, 2.9);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

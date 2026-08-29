@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="theme/tokens.css" />
+    <link rel="stylesheet" href="theme/fonts.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px; height: 1080px; overflow: hidden;
+        background: transparent;
+        font-family: var(--font-text);
+      }
+
+      /* Lower third. The card is translated fully below the frame at rest, so
+         a seek to t=0 shows an empty frame with no flash of card. */
+      .dock {
+        position: absolute; left: 0; right: 0; bottom: 0;
+        display: flex; justify-content: center;
+        padding-bottom: 96px;
+        will-change: transform;
+      }
+
+      .card {
+        display: flex; align-items: center; gap: 32px;
+        max-width: 1360px;
+        padding: 40px 56px;
+        border-radius: 24px;
+        /* Semi-transparent black over the footage, lifted just enough to read. */
+        background: rgba(0, 0, 0, 0.72);
+        border: 1px solid var(--outline-gray-2);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(12px);
+      }
+
+      .tag {
+        flex: none;
+        font-size: 40px; font-weight: var(--fw-bold);
+        letter-spacing: 0.04em;
+        color: var(--brand-ink);
+      }
+
+      .rule {
+        flex: none; width: 2px; align-self: stretch;
+        background: var(--brand);
+        opacity: 0.55;
+        border-radius: 2px;
+      }
+
+      .text {
+        font-size: 44px; line-height: 1.28;
+        font-weight: var(--fw-medium);
+        letter-spacing: -0.012em;
+        color: var(--ink-gray-9);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main"
+         data-start="0" data-duration="25.63" data-fps="30"
+         data-width="1920" data-height="1080">
+      <div class="clip" id="clip"
+           data-start="0" data-duration="25.63" data-track-index="0">
+        <div class="dock" id="dock">
+          <div class="card">
+            <span class="tag">Q</span>
+            <span class="rule"></span>
+            <span class="text" id="qtext">
+              What is the configuration of the Hetzner server?
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      /* springEase — a damped spring's exact position curve, as a GSAP ease.
+         Closed form, so it is a pure function of progress and stays seek-safe.
+         zeta 0.65 is the skill's "physical overshoot" register: a real settle
+         with ~5-10% overshoot, rather than the cartoon bounce of elastic.out. */
+      function springEase({ response = 0.5, dampingFraction = 1 } = {}) {
+        const w = (2 * Math.PI) / response;
+        const z = dampingFraction;
+        let pos;
+        if (z < 1) {
+          const wd = w * Math.sqrt(1 - z * z);
+          pos = (t) => 1 - Math.exp(-z * w * t) * (Math.cos(wd * t) + ((z * w) / wd) * Math.sin(wd * t));
+        } else if (z > 1) {
+          const wo = w * Math.sqrt(z * z - 1);
+          pos = (t) => 1 - Math.exp(-z * w * t) * (Math.cosh(wo * t) + ((z * w) / wo) * Math.sinh(wo * t));
+        } else {
+          pos = (t) => 1 - Math.exp(-w * t) * (1 + w * t);
+        }
+        const EPS = 0.001;
+        const rate = z <= 1 ? z * w : (z - Math.sqrt(z * z - 1)) * w;
+        const SCAN = 12 / rate;
+        const N = 4800;
+        let T = SCAN;
+        for (let i = N; i >= 0; i--) {
+          const t = (i / N) * SCAN;
+          if (Math.abs(1 - pos(t)) > EPS) { T = ((i + 1) / N) * SCAN; break; }
+        }
+        const xT = pos(T);
+        return { duration: T, ease: (p) => pos(p * T) + p * (1 - xT) };
+      }
+
+      const rise = springEase({ response: 0.62, dampingFraction: 0.65 });
+
+      // Travel is a fixed constant, not a measured bbox — tween-time DOM reads
+      // desync because the renderer samples frames in parallel.
+      const OFFSCREEN = 420;
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#dock",
+        { y: OFFSCREEN, opacity: 0 },
+        { y: 0, opacity: 1, duration: rise.duration, ease: rise.ease },
+        0);
+
+      // Holds while the question is answered, then drops back out of frame.
+      tl.to("#dock", { y: OFFSCREEN, opacity: 0, duration: 0.55, ease: "power2.in" }, 25.08);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

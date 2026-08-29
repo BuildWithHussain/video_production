@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1200, height=630" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="theme/tokens.css" />
+    <link rel="stylesheet" href="theme/fonts.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1200px; height: 630px; overflow: hidden;
+        background: var(--surface-base);
+        font-family: var(--font-text);
+      }
+
+      .bg { position: absolute; inset: 0; background: var(--surface-base); }
+      .glow {
+        position: absolute; top: 50%; left: 12%;
+        width: 700px; height: 700px; transform: translate(-50%, -50%);
+        border-radius: 9999px;
+        background: radial-gradient(circle,
+          color-mix(in srgb, var(--brand) 20%, transparent) 0%, transparent 70%);
+      }
+
+      .stage { position: absolute; inset: 0; padding: 54px 64px; z-index: 2;
+               display: flex; flex-direction: column; justify-content: center; gap: 34px; }
+
+      .row { display: flex; align-items: flex-end; gap: 22px; }
+      .row.me { justify-content: flex-end; }
+
+      .avatar {
+        width: 132px; height: 132px; border-radius: 9999px; flex: none;
+        object-fit: cover; background: var(--surface-gray-2);
+        border: 3px solid var(--surface-gray-3);
+      }
+      .avatar.hussain { object-position: 52% 34%; }
+
+      .bubble {
+        max-width: 900px;
+        font-size: 46px; line-height: 1.24; font-weight: var(--fw-semibold);
+        padding: 28px 38px; border-radius: 34px;
+      }
+      .bubble.me {
+        background: var(--brand); color: #fff;
+        border-bottom-right-radius: 10px;
+      }
+      .bubble.donna {
+        background: var(--surface-gray-2); color: var(--ink-gray-9);
+        border-bottom-left-radius: 10px;
+        border: 1px solid var(--surface-gray-3);
+      }
+      .bubble .done { color: var(--brand-ink); font-weight: var(--fw-bold); }
+      .bubble .sub {
+        display: block; margin-top: 12px;
+        font-size: 32px; font-weight: var(--fw-medium); color: var(--ink-gray-6);
+      }
+
+      .footer {
+        position: absolute; left: 64px; bottom: 34px; z-index: 3;
+        display: flex; align-items: center; gap: 16px;
+        font-size: 26px; font-weight: var(--fw-semibold);
+        letter-spacing: 0.08em; text-transform: uppercase;
+        color: var(--ink-gray-6);
+      }
+      .footer .dot { width: 10px; height: 10px; border-radius: 9999px; background: var(--brand); }
+    </style>
+  </head>
+
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="1"
+         data-fps="30" data-width="1200" data-height="630">
+      <div class="bg"><div class="glow"></div></div>
+
+      <div class="stage">
+        <div class="row me">
+          <div class="bubble me">Razorpay settled today?</div>
+          <img class="avatar hussain" src="assets/img/hussain-avatar.png" alt="" />
+        </div>
+
+        <div class="row">
+          <img class="avatar" src="assets/img/donna-face.png" alt="" />
+          <div class="bubble donna">
+            <span class="done">Done ✓</span> 4 Payment Entries booked
+            <span class="sub">Clearing accounts at ₹0 · Ledger verified</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer"><span class="dot"></span>Automating the boring stuff with an AI agent</div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>
